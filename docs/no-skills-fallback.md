@@ -6,7 +6,7 @@ If you don't have Claude in Chrome or can't install Skills, the same workflow wo
 
 | Step | With Chrome Extension | Manual Alternative |
 |---|---|---|
-| Read a job page | Claude reads it from your tab | You copy-paste the job description |
+| Collect jobs | Save on LinkedIn; Claude pulls your whole Saved list | You copy-paste each job description |
 | Save to tracker | Claude writes to Google Sheet | You copy the output into your sheet |
 | Access career profile | Claude reads from Drive | You attach the file each conversation |
 | Save fit reports | Claude saves to Drive | You save the output yourself |

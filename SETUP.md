@@ -3,11 +3,11 @@
 ## What You're Setting Up
 
 ```
-Chrome + Claude Extension  ──→  Reads job pages as you browse
+Chrome + Claude Extension  ──→  Reads the jobs you saved on LinkedIn
         │
 Claude Skills (4 agents)   ──→  Process jobs, profile, fit, resumes
         │
-Google Drive Connector     ──→  Saves tracker + resumes to your Drive
+Google Drive Connector     ──→  Saves tracker, job docs + resumes to your Drive
 ```
 
 Total time: ~20 minutes for setup, ~30 minutes to build your first career profile.
@@ -44,9 +44,9 @@ Total time: ~20 minutes for setup, ~30 minutes to build your first career profil
 3. Type: "Summarize this page."
 4. If Claude summarizes the page content, the extension is working.
 
-**What Claude in Chrome does:** It lets Claude read the webpage you're currently viewing. You stay logged into your accounts (LinkedIn, etc.) — Claude reads the page through the extension, not by logging in as you.
+**What Claude in Chrome does:** It lets Claude read and navigate pages in your own Chrome. You stay logged into your accounts (LinkedIn, etc.) — Claude works through the extension in your session, not by logging in as you.
 
-**What it does NOT do:** It does not scrape, crawl, or automate anything. It reads one page at a time when you ask it to.
+**How this system uses it:** When you ask, the Job Capture agent opens your LinkedIn Saved jobs list and each job on it, and reads them. It never applies, messages, or un-saves anything, and it doesn't touch jobs you didn't save.
 
 ---
 
@@ -64,10 +64,13 @@ Total time: ~20 minutes for setup, ~30 minutes to build your first career profil
 
 With Google Drive connected, Claude can:
 
-- **Read** your Google Sheet tracker to see which jobs you've saved
-- **Write** new rows to your tracker when you capture a job
+- **Create** your Google Sheet tracker (from the jobs you saved on LinkedIn)
+- **Create** one Google Doc per saved job, holding the full job description
+- **Read** your tracker and job docs
 - **Read** your career profile from Drive (so you don't have to attach it every time)
 - **Save** fit reports and tailored resumes directly to your Drive
+
+**Limit:** the connector cannot edit cells in an existing sheet. For an existing sheet, Claude types the rows in through Claude in Chrome instead. Don't edit the sheet yourself while a capture run is going.
 
 ### 2.3 Test It
 
@@ -83,6 +86,8 @@ If it shows your files, the connection is working.
 
 ## Part 3: Create Your Job Tracker Sheet (5 minutes)
 
+**Shortcut:** skip this part and let the Job Capture agent create the sheet on its first run (*"…create a new Job Search Tracker sheet"*).
+
 ### 3.1 Create the Sheet
 
 1. Go to [Google Sheets](https://sheets.google.com).
@@ -91,11 +96,13 @@ If it shows your files, the connection is working.
 
 ### 3.2 Add Column Headers
 
-In Row 1, add these headers across columns A through J:
+In Row 1, add these headers across columns A through L:
 
-| A | B | C | D | E | F | G | H | I | J |
-|---|---|---|---|---|---|---|---|---|---|
-| Company | Role | Location | Job URL | Date Found | Fit Score | Status | Applied On | Resume Version | Notes |
+| A | B | C | D | E | F | G | H | I | J | K | L |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Company | Employees | Job Link | Title | Location | Posted | Clicked Apply | JD Doc | Fit Score | Status | Applied On | Resume |
+
+Columns A–H are filled by **Job Capture** from your LinkedIn saved jobs. **Fit Score** comes from **Job Fit**, and **Resume** from **Resume Tailor**.
 
 ### 3.3 Status Values
 
@@ -210,18 +217,19 @@ Please:
 
 ### The Chrome Extension Workflow
 
-**Step 1 — Browse LinkedIn (you, logged in):**
+**Step 1 — Save jobs on LinkedIn (you, logged in):**
 - Search for jobs normally on LinkedIn.
-- Open a job that interests you.
+- Click **Save** on each job that interests you. Saved jobs appear under **My Jobs → Saved** (LinkedIn's Job tracker).
 
-**Step 2 — Capture (Claude in Chrome):**
-- Click the Claude icon while on the job page.
-- Say: *"Capture this job to my Google Sheet tracker."*
-- Claude reads the job from the page and adds a row to your sheet.
+**Step 2 — Capture your saved jobs (Claude in Chrome):**
+- Once you have a batch, click the Claude icon in Chrome.
+- Say: *"Use my job-capture skill to capture my LinkedIn saved jobs into my Job Search Tracker sheet. One Google Doc per job in my Job Descriptions folder. Only new jobs."*
+- Claude asks a few setup questions (tab, sheet, folder), then opens your Saved list and each saved job. It creates a doc per job, adds a row per job, and reads the sheet back to verify.
+- Expect a few minutes per job. Don't edit the sheet while it runs.
 
 **Step 3 — Analyze fit (Claude in Chrome or claude.ai):**
-- Say: *"Analyze my fit for this role. Use my career profile from Drive."*
-- Claude reads the job + your profile and returns a fit report.
+- Say: *"Analyze my fit for the [Company] – [Title] job in my tracker. Use its JD Doc and my career profile from Drive."*
+- Claude reads the job doc + your profile and returns a fit report.
 
 **Step 4 — Tailor resume (only for Apply/Prioritize jobs):**
 - Say: *"Tailor my resume for this role. Save to Drive."*
@@ -231,7 +239,7 @@ Please:
 - Read every line of the resume.
 - Verify the job is real on the employer's careers site.
 - Apply through the official channel.
-- Update your tracker with the date and resume version.
+- Set **Status** to `Applied` and fill **Applied On** in your tracker.
 
 ### Weekly Review
 
@@ -248,7 +256,16 @@ which roles are getting responses, and what gaps keep appearing.
 ## Troubleshooting
 
 **"Claude in Chrome doesn't read the page"**
-→ Make sure the extension is installed and you're signed in. Try refreshing the page.
+→ Make sure the extension is installed and you're signed in to both Claude and LinkedIn. Try refreshing the page.
+
+**"A job came back with no description"**
+→ LinkedIn loads slowly. Ask Claude to reload that job and wait longer. Don't accept an empty row.
+
+**"All my values landed in one cell"**
+→ Typed tab characters don't move between Sheets cells. Select the range → Data → **Split text to columns**. The skill's reference file tells Claude to press the Tab key instead.
+
+**"LinkedIn showed a warning or CAPTCHA"**
+→ Stop the run. Capture fewer jobs at a time and go slower.
 
 **"Claude can't find my Google Sheet"**
 → Check that Google Drive is connected in Claude's connectors. Make sure the sheet name matches exactly.

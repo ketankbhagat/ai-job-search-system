@@ -1,6 +1,6 @@
 ---
 name: job-fit
-description: "Compare a job description with the user's career profile and produce a fit report with a go/skip recommendation. Works with Claude in Chrome (reads job from the current page) or pasted job descriptions. Pulls career profile from Google Drive automatically. Use when the user asks to analyze fit, score a job, check if they should apply, or evaluate a role."
+description: "Compare a job description with the user's career profile and produce a fit report with a go/skip recommendation. Reads the job from its JD Doc in the tracker (created by job-capture), the current Chrome page, or a pasted description. Pulls career profile from Google Drive automatically. Use when the user asks to analyze fit, score a job, check if they should apply, or evaluate a role."
 ---
 
 # Job Fit Analyzer
@@ -11,7 +11,10 @@ Help the user decide whether a role is worth applying to — using evidence, not
 
 ## How Input Works
 
-**With Claude in Chrome (preferred):**
+**From the tracker (preferred):**
+Open the job's **JD Doc** link from the user's Job Search Tracker (created by the job-capture skill).
+
+**With Claude in Chrome:**
 Read the job description from the page the user is currently viewing.
 
 **Manual fallback:**
@@ -22,7 +25,7 @@ If Google Drive is connected, pull `career-profile.private.md` from the user's D
 
 ## Inputs
 
-1. The job description (from Chrome tab, pasted, or attached)
+1. The job description (JD Doc from the tracker, Chrome tab, pasted, or attached)
 2. The user's `career-profile.private.md` (from Drive or attached)
 3. Optional: the user's Google Sheet tracker row for this job
 

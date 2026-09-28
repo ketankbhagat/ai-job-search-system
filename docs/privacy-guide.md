@@ -21,11 +21,11 @@
 
 ## Claude in Chrome Privacy
 
-Claude in Chrome can read pages you're logged into. For job searching:
+Claude in Chrome can read and navigate pages you're logged into. For job searching:
 
 - **Keep sensitive tabs closed** (banking, email with private content) when using the extension
 - **Do not paste** passwords, API keys, or identity documents into Claude
-- **The extension reads one page** when you ask — it doesn't scrape or crawl
+- **Job Capture only opens your own Saved jobs**, only when you ask, and only reads. It never applies, messages, or un-saves. Keep runs to a human pace, and stop if LinkedIn shows a warning
 - **Verify before submitting** — check that Claude didn't misread something from the page
 - **Site permissions** — some sites may block the extension; that's fine, use manual copy-paste
 

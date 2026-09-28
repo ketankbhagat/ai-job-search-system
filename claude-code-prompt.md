@@ -10,17 +10,18 @@ Copy this entire prompt into Claude Code (terminal) to scaffold the complete pro
 Create a GitHub-ready project called "ai-job-search-system" with this structure
 and content. This is an open-source, AI-assisted job search workflow for new
 graduates. It uses Claude Skills as "agents" with Claude in Chrome for reading
-job pages and Google Drive for storage. Human stays in the loop at every step.
+the user's LinkedIn Saved jobs and Google Drive for storage. Human stays in the loop at every step.
 
 ## Architecture
 
 4 AI agents (Claude Skills) + Claude in Chrome + Google Drive + 1 human:
 
-1. Job Capture Agent — reads the job page via Claude in Chrome, structures it,
-   saves a row to the user's Google Sheet tracker via Google Drive connector
+1. Job Capture Agent — opens the user's LinkedIn Job tracker (Saved tab) via
+   Claude in Chrome, reads each saved job, creates one Google Doc per job
+   description, and writes one row per job to the Google Sheet tracker
 2. Profile Agent — builds a career profile from LinkedIn PDF + resume + CAR examples,
    suggests target job titles, saves profile to Google Drive
-3. Job Fit Agent — reads job from Chrome tab + pulls profile from Drive,
+3. Job Fit Agent — reads the job's JD Doc + pulls profile from Drive,
    compares them, recommends Prioritize/Apply/Stretch/Skip, updates tracker
 4. Resume Tailor Agent — reads job from Chrome + profile from Drive,
    tailors resume using only real facts, saves to Drive, updates tracker
@@ -28,10 +29,10 @@ job pages and Google Drive for storage. Human stays in the loop at every step.
 
 The Chrome extension flow:
 - User browses LinkedIn logged into their own account
-- Clicks Claude in Chrome icon on a job page
-- Claude reads the job description from the page (no scraping, no automation)
-- Passes it to the appropriate skill
-- Saves output to Google Drive / Google Sheet
+- Clicks Save on jobs; they collect in LinkedIn's Job tracker (My Jobs → Saved)
+- Asks Claude in Chrome to capture the saved jobs
+- Claude reads only the user's saved jobs, read-only, at a human pace
+- Saves JD docs + tracker rows to Google Drive / Google Sheet
 
 Manual fallback for users without Chrome extension:
 - Copy-paste job descriptions into Claude conversations
@@ -67,7 +68,7 @@ ai-job-search-system/
 
 ## Key principles for ALL content:
 
-1. Claude in Chrome reads job pages — no scraping or automation
+1. Claude in Chrome reads only the user's own saved jobs — read-only, user-started
 2. Google Drive stores everything — tracker, profile, resumes, fit reports
 3. AI is copilot, human is pilot — every agent output needs human approval
 4. Never invent experience — gaps are labeled "Gap" not filled with fiction

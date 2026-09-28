@@ -1,6 +1,6 @@
 ---
 name: resume-tailor
-description: "Tailor a resume to a specific job using the user's career profile, fit report, and resume template. Only facts from the career profile are allowed — never invent experience. Reads inputs from Google Drive when connected. Works with Claude in Chrome to read the job from the current page. Use when the user asks to create, tailor, or customize a resume for a role."
+description: "Tailor a resume to a specific job using the user's career profile, fit report, and resume template. Only facts from the career profile are allowed — never invent experience. Reads inputs from Google Drive when connected. Reads the job from its JD Doc in the tracker, the current Chrome page, or a pasted description. Use when the user asks to create, tailor, or customize a resume for a role."
 ---
 
 # Resume Tailor Agent
@@ -11,13 +11,14 @@ Create a role-specific resume after the user has reviewed the fit report and dec
 
 ## How Input Works
 
+**From the tracker (preferred):** Open the job's **JD Doc** link from the Job Search Tracker.
 **With Claude in Chrome:** Read the job description from the current page.
 **With Google Drive:** Pull career profile and resume template from Drive. Save the tailored resume back to Drive.
 **Manual fallback:** User attaches all files and saves output manually.
 
 ## Required Inputs
 
-1. Job description (from Chrome tab, pasted, or attached)
+1. Job description (JD Doc from the tracker, Chrome tab, pasted, or attached)
 2. Career profile — `career-profile.private.md` (from Drive or attached)
 3. Fit report or approved fit strategy
 4. Resume template (user's own from Drive, or `references/resume-template.md`)
@@ -49,7 +50,7 @@ Return:
 3. **Verification checklist** — every claim the user should double-check
 4. **Gaps left off** — requirements intentionally not addressed (honest gaps)
 
-**If Google Drive is connected:** Save the tailored resume to Drive with a descriptive filename like `Resume_CompanyName_Role_Date.md`. Update the Resume Version column in the Google Sheet tracker.
+**If Google Drive is connected:** Save the tailored resume to Drive with a descriptive filename like `Resume_CompanyName_Role_Date.md`. Put the resume's Drive link in the tracker's **Resume** column.
 
 ## Template Preservation
 

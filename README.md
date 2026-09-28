@@ -7,9 +7,9 @@ A free, open-source workflow that uses Claude AI + Claude in Chrome to organize 
 ## How It Works — 5 Agents, 1 Human
 
 ```
-LinkedIn ──→ Claude in Chrome reads the job page you're viewing
-                │
-                ▼
+You save jobs on LinkedIn ──→ Claude in Chrome reads your Saved jobs list
+                                   │
+                                   ▼
 You ──→ ① Capture ──→ ② Profile ──→ ③ Fit ──→ ④ Resume ──→ ⑤ Apply
           save to       build your    score     tailor for    review &
           Google Sheet   evidence      each job  the role      submit
@@ -20,14 +20,14 @@ You ──→ ① Capture ──→ ② Profile ──→ ③ Fit ──→ ④ 
           connector      (private)               Google Drive
 ```
 
-Each agent is a Claude Skill — a reusable instruction set you install once. Claude in Chrome lets the agents read job pages you're viewing while you're logged into LinkedIn. Google Drive connector lets Claude save outputs directly to your Drive.
+Each agent is a Claude Skill — a reusable instruction set you install once. You click **Save** on jobs as you browse LinkedIn; they collect in LinkedIn's Job tracker (**My Jobs → Saved**). Then you ask Claude in Chrome to capture them, and it pulls each saved job's details into your Google Sheet tracker, with one Google Doc per job description. The Google Drive connector lets Claude save everything to your Drive.
 
 ## What You Need
 
 | Tool | Why | Cost |
 |---|---|---|
 | [Claude](https://claude.ai) | AI assistant that runs the agents | Free tier works; Pro is better |
-| [Claude in Chrome](https://chromewebstore.google.com/detail/claude/danfohhgmbaghpjboimpdpfmfjnkjocbp) | Lets Claude read the job page you're viewing | Free extension |
+| [Claude in Chrome](https://chromewebstore.google.com/detail/claude/danfohhgmbaghpjboimpdpfmfjnkjocbp) | Lets Claude read your saved jobs in your logged-in LinkedIn session | Free extension |
 | Google account | Sheets for tracker, Drive for resume storage | Free |
 | Chrome browser | For Claude in Chrome extension | Free |
 
@@ -48,23 +48,27 @@ No coding. No API keys. No terminal.
 2. Click the **Connectors** icon (integrations/puzzle piece).
 3. Find **Google Drive** and click **Connect**.
 4. Authorize Claude to access your Google account.
-5. Now Claude can read/write your Google Sheets tracker and save files to Drive.
+5. Now Claude can create your tracker sheet, save job-description docs, and read files in your Drive.
+
+> The connector can **create** a sheet but can't edit cells in an existing one. Claude either creates a fresh tracker sheet for you, or types into your existing sheet through Claude in Chrome.
 
 ### Step 3: Set up your Google Sheet tracker
+
+Easiest: let the Job Capture agent create it on the first run. To make it yourself:
 
 1. Open [Google Sheets](https://sheets.google.com) and create a new sheet.
 2. Name it **Job Search Tracker**.
 3. Add these column headers in Row 1:
 
 ```
-Company | Role | Location | Job URL | Date Found | Fit Score | Status | Applied On | Resume Version | Notes
+Company | Employees | Job Link | Title | Location | Posted | Clicked Apply | JD Doc | Fit Score | Status | Applied On | Resume
 ```
 
 ### Step 4: Install the Claude Skills
 
 1. Go to [claude.ai](https://claude.ai) → Settings → Skills.
 2. Upload each skill folder from the `skills/` directory (one at a time):
-   - `job-capture` — reads job pages and saves to your tracker
+   - `job-capture` — pulls your LinkedIn saved jobs into your tracker sheet
    - `profile-agent` — builds your career evidence file
    - `job-fit` — scores how well you match a job
    - `resume-tailor` — tailors your resume for a specific role
@@ -93,33 +97,35 @@ Save the output as `career-profile.private.md` in your Google Drive. This is you
 
 This is where the Chrome extension shines. Here's how a typical session works:
 
-### Finding and Capturing Jobs
+### Saving and Capturing Jobs
 
 1. **Open LinkedIn** in Chrome (logged into your account).
-2. **Browse jobs** normally — search, filter, save ones that interest you.
-3. **On a job page**, click the Claude in Chrome icon in your toolbar.
+2. **Browse jobs** normally. Click **Save** on any job worth a closer look. Saved jobs collect in **My Jobs → Saved** (LinkedIn's Job tracker).
+3. When you have a batch, click the Claude in Chrome icon in your toolbar.
 4. **Tell Claude:**
 
 ```
-Capture this job for my tracker.
-Read the job description from this page and add a row
-to my Job Search Tracker Google Sheet.
+Use my job-capture skill to capture my LinkedIn saved jobs
+into my Job Search Tracker Google Sheet.
+Create one Google Doc per job in my "Job Descriptions" Drive folder.
+Only add jobs that aren't already in the sheet.
 ```
 
-Claude reads the job posting directly from the page you're viewing, structures it, and writes it to your Google Sheet — no copy-pasting.
+Claude opens your Saved list, visits each saved job, and reads the company, title, location, posted date, applicant count, company size and full description. It creates one Google Doc per job and writes one row per job to your sheet. At the end it reads the sheet back to check its work. Plan on a few minutes per job.
+
+> Just want one job? Open it and say *"Capture this job to my tracker."*
 
 ### Analyzing Fit
 
-While still on the job page (or any job page):
+Pick a row from your tracker:
 
 ```
-Analyze how well I fit this role.
-Read the job description from this page.
-Use my career profile from Google Drive (career-profile.private.md).
-Give me a fit report.
+Analyze how well I fit the [Company] – [Title] job in my tracker.
+Use its JD Doc and my career profile from Google Drive
+(career-profile.private.md). Give me a fit report.
 ```
 
-Claude reads the job from the tab, pulls your profile from Drive, and returns a fit report.
+Claude reads the saved job description and your profile from Drive and returns a fit report.
 
 ### Tailoring a Resume
 
@@ -127,30 +133,25 @@ After reviewing the fit report and deciding to apply:
 
 ```
 Create a tailored resume for this role.
-Use the job from this page and my career profile from Drive.
+Use its JD Doc and my career profile from Drive.
 Use only facts from my profile. Flag anything I need to verify.
 Save the tailored resume to my Google Drive.
 ```
 
-### The Full Flow on One Job Page
+### A Typical Week
 
-You can even chain it in one conversation:
-
-```
-I'm looking at this job page. Please:
-1. Capture it to my Google Sheet tracker
-2. Analyze my fit using my career profile from Drive
-3. If fit is "Apply" or "Prioritize," draft a tailored resume
-4. Save the resume to my Google Drive
-```
+1. Save jobs on LinkedIn during the week (seconds each).
+2. Once or twice a week, run Job Capture to pull the new saved jobs into your sheet.
+3. Run Job Fit on the new rows and sort by recommendation.
+4. Tailor resumes only for **Prioritize** / **Apply** jobs.
 
 ## The 5 Agents Explained
 
 ### Agent 1: Job Capture
-**What it does:** Reads the job page in your Chrome tab and saves a structured row to your Google Sheet.
-**How it works with Chrome:** Claude in Chrome reads the job description directly — no copy-pasting needed.
-**How it works with Drive:** Writes the structured data to your Google Sheet tracker.
-**You control:** Which jobs to save. Whether the job is legitimate.
+**What it does:** Pulls the jobs you saved in LinkedIn's Job tracker into your Google Sheet, one row per job plus a Google Doc with the full description.
+**How it works with Chrome:** Claude in Chrome opens your Saved list and each saved job in your own logged-in session. It is read-only: it never applies, messages, or un-saves.
+**How it works with Drive:** Creates the job-description docs and the tracker sheet.
+**You control:** Which jobs you save on LinkedIn, and when to run a capture. Whether each job is legitimate.
 
 ### Agent 2: Profile Agent
 **What it does:** Builds a factual career profile from your resume, LinkedIn, and real examples. Suggests target job titles.
@@ -160,8 +161,7 @@ I'm looking at this job page. Please:
 
 ### Agent 3: Job Fit Analyzer
 **What it does:** Compares a job description against your career profile.
-**How it works with Chrome:** Reads the job from the page you're viewing.
-**How it works with Drive:** Pulls your career profile from Drive automatically.
+**How it works with Drive:** Reads the job's JD Doc and your career profile from Drive, and records the result in the Fit Score column.
 **You control:** Whether to apply or skip.
 **Output:** Fit report with Strong/Related/Gap ratings + Prioritize/Apply/Stretch/Skip recommendation.
 
@@ -179,21 +179,21 @@ I'm looking at this job page. Please:
 
 | | With Claude in Chrome (recommended) | Manual fallback |
 |---|---|---|
-| **Reading jobs** | Claude reads the page you're on | You copy-paste the job description |
-| **Saving to tracker** | Claude writes to Google Sheet via Drive | You copy Claude's output into your sheet |
+| **Collecting jobs** | Save on LinkedIn; Claude pulls your whole Saved list | You copy-paste each job description |
+| **Saving to tracker** | Claude creates/fills your Google Sheet | You copy Claude's output into your sheet |
 | **Career profile** | Stored in Google Drive, Claude pulls it | You attach the file each time |
 | **Fit reports** | Saved to Drive automatically | You save them yourself |
 | **Tailored resumes** | Saved to Drive automatically | You save them yourself |
 | **Works on** | Chrome desktop only | Any device, any browser |
 
-Both paths use the same Skills and produce the same quality output. The Chrome extension just removes the copy-paste friction.
+Both paths use the same Skills and produce the same quality output. The Chrome extension removes the copy-paste work.
 
 ## Important Rules
 
 - **Never invent experience.** If you can't defend it in an interview, delete it.
 - **Never keyword-stuff.** Use the employer's words only when they truthfully describe your work.
 - **Never automate applications.** Apply manually through legitimate channels.
-- **Don't scrape LinkedIn.** Claude in Chrome reads one page at a time as you browse — it does not crawl, bulk-collect, or automate activity.
+- **Only your own saved jobs.** Job Capture reads the jobs *you* saved, in *your* logged-in session, when *you* ask. Don't point it at search results or other people's data, and keep runs to a human pace. It still drives a browser on LinkedIn, and LinkedIn's User Agreement restricts automated access, so read it and decide for yourself. If LinkedIn shows a warning, stop.
 - **Never trust a fit score blindly.** It helps prioritize — it doesn't predict hiring.
 - **Never put private data in this public repo.** Keep resumes, tracker, and profile in your private Google Drive.
 - **Always verify the job is real.** Check the employer's official careers site. See [FTC job scam guidance](https://consumer.ftc.gov/articles/job-scams).
@@ -203,7 +203,7 @@ Both paths use the same Skills and produce the same quality output. The Chrome e
 ```
 .
 ├── README.md                  ← You are here
-├── SETUP.md                   ← Detailed setup with screenshots
+├── SETUP.md                   ← Step-by-step setup
 ├── docs/
 │   ├── how-it-works.md        ← Architecture + Chrome extension flow
 │   ├── no-skills-fallback.md  ← Use without Skills (copy-paste prompts)
@@ -213,7 +213,7 @@ Both paths use the same Skills and produce the same quality output. The Chrome e
 │   ├── fit-report.template.md
 │   └── resume-template.md
 ├── skills/
-│   ├── job-capture/SKILL.md
+│   ├── job-capture/SKILL.md   ← + references/linkedin-saved-jobs.md
 │   ├── profile-agent/SKILL.md
 │   ├── job-fit/SKILL.md
 │   └── resume-tailor/SKILL.md

@@ -9,8 +9,8 @@
 │  ┌──────────────────────────────────────────────────────────────┐   │
 │  │              CLAUDE IN CHROME (browser extension)            │   │
 │  │                                                              │   │
-│  │  You browse LinkedIn ──→ Claude reads the job page           │   │
-│  │  (logged in as you)      (no scraping, no automation)        │   │
+│  │  You save jobs on    ──→ Claude reads your Saved list        │   │
+│  │  LinkedIn (logged in)    and each saved job (read-only)      │   │
 │  └──────────────┬───────────────────────────────────────────────┘   │
 │                 │ job description text                               │
 │                 ▼                                                    │
@@ -24,7 +24,8 @@
 │  │                 GOOGLE DRIVE (your private storage)          │   │
 │  │                                                             │   │
 │  │  📊 Job Tracker Sheet    📄 Career Profile                  │   │
-│  │  📝 Fit Reports          📄 Tailored Resumes                │   │
+│  │  📄 Job Description Docs 📝 Fit Reports                     │   │
+│  │  📄 Tailored Resumes                                        │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                          │                                         │
 │                     YOU DECIDE                                     │
@@ -34,41 +35,46 @@
 
 ## How Claude in Chrome Fits In
 
-Claude in Chrome is a browser extension that lets Claude read the webpage you're currently viewing. Here's what that means for job searching:
-
-**What happens when you click the Claude icon on a LinkedIn job page:**
+Claude in Chrome is a browser extension that lets Claude read and navigate pages in your own Chrome, using your logged-in sessions. Here's how the Job Capture agent uses it:
 
 ```
-1. You open a job on LinkedIn (you're logged in)
-2. You click the Claude extension icon
-3. Claude reads the page content (job title, company, description, requirements)
-4. Claude processes it through the appropriate skill (capture, fit, or resume)
-5. Claude saves the output to your Google Drive
+1. You browse LinkedIn and click Save on jobs you like
+   → they collect in My Jobs → Saved (LinkedIn's Job tracker)
+2. You click the Claude extension icon and ask it to capture your saved jobs
+3. Claude opens your Saved list and collects the link to each saved job
+4. Claude opens each saved job, expands the description, and reads it
+   (company, title, location, posted, applicant count, full description)
+5. Claude checks each company's size on its LinkedIn About page
+6. Claude creates one Google Doc per job and one tracker row per job
+7. Claude reads the sheet back to verify every row
 ```
 
-**What Claude in Chrome does NOT do:**
-- It does not log into LinkedIn as you
-- It does not click buttons or submit forms
-- It does not scrape multiple pages or crawl
-- It does not automate any LinkedIn activity
-- It reads one page at a time, only when you ask
+**What it does:**
+- Opens your own Saved list and the jobs on it, in your session, when you ask
+- Clicks "See more" and page numbers so it can read the whole description and list
 
-This is the same as you reading the page and copying the text into Claude — the extension just removes the copy-paste step.
+**What it does NOT do:**
+- Log into LinkedIn as anyone
+- Apply, message, save, un-save, or change anything on LinkedIn
+- Search for or collect jobs you didn't save
+- Run in the background or on a schedule
+
+It is still browser automation on LinkedIn, so keep runs to a human pace and stop if LinkedIn shows a warning. See "Why Not Fully Automated?" below.
 
 ## The Three Connected Layers
 
 ### Layer 1: Claude in Chrome (input)
-Reads job pages you're viewing in your browser. This is how job descriptions enter the system.
+Reads the jobs you saved in LinkedIn's Job tracker. This is how job descriptions enter the system.
 
 ### Layer 2: Claude Skills (processing)
 Four skills that each do one thing well:
 
 | Skill | Reads | Produces |
 |---|---|---|
-| Job Capture | Job page via Chrome | Tracker row in Google Sheet |
+| Job Capture | Your LinkedIn Saved jobs via Chrome | JD Doc per job + tracker rows in Google Sheet |
 | Profile Agent | Your resume + LinkedIn PDF + CAR examples | Career profile in Google Drive |
-| Job Fit | Job page + career profile from Drive | Fit report |
-| Resume Tailor | Job page + profile + template from Drive | Tailored resume in Google Drive |
+| Job Fit | JD Doc + career profile from Drive | Fit report + Fit Score in tracker |
+| Resume Tailor | JD Doc + profile + template from Drive | Tailored resume in Google Drive + Resume link in tracker |
 
 ### Layer 3: Google Drive (storage)
 Your private storage for everything the system produces. Nothing goes to the public repo.
@@ -76,13 +82,13 @@ Your private storage for everything the system produces. Nothing goes to the pub
 ## Data Flow — With Chrome Extension
 
 ```
-LinkedIn Job Page ──(Chrome ext reads)──▶ Capture Agent ──(Drive)──▶ Google Sheet
+LinkedIn Saved jobs ──(Chrome ext reads)──▶ Capture Agent ──(Drive)──▶ JD Docs + Google Sheet
                                                                         │
 Your LinkedIn PDF ─┐                                                    │
 Your Resume ───────┼──▶ Profile Agent ──(Drive)──▶ career-profile.private.md
 Your CAR Examples ─┘                                     │
                                                          │(Drive reads)
-LinkedIn Job Page ─┐                                     │
+JD Doc (from Drive)─┐                                     │
                    ├──▶ Fit Agent ──▶ Fit Report ──(Drive)──▶ saved
 Career Profile ────┘                      │
                                           │(if "go")
@@ -134,7 +140,7 @@ Same agents, same quality. The Chrome extension + Drive connector just removes f
 ## Why Not Fully Automated?
 
 1. **AI invents things.** It can write a convincing resume bullet that never happened. Only you know what's real.
-2. **Platforms prohibit automation.** LinkedIn prohibits unauthorized scraping and automated activity. Claude in Chrome reads one page at a time as you browse — that's human-initiated reading, not automation.
+2. **Platforms restrict automation.** LinkedIn's User Agreement restricts scraping and automated activity. That's why the capture step only reads jobs *you* saved, only when *you* start it, only reads, and goes at a human pace. Applying is always manual. Read LinkedIn's terms and decide for yourself.
 3. **Quality beats quantity.** Five well-targeted applications beat fifty generic ones.
 
 ## Browser Safety
