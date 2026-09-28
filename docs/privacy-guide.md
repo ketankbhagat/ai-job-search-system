@@ -19,6 +19,24 @@
 - Blank templates — they have placeholder text only
 - The README and guides — they describe the process, not your data
 
+## Claude in Chrome Privacy
+
+Claude in Chrome can read pages you're logged into. For job searching:
+
+- **Keep sensitive tabs closed** (banking, email with private content) when using the extension
+- **Do not paste** passwords, API keys, or identity documents into Claude
+- **The extension reads one page** when you ask — it doesn't scrape or crawl
+- **Verify before submitting** — check that Claude didn't misread something from the page
+- **Site permissions** — some sites may block the extension; that's fine, use manual copy-paste
+
+## Google Drive Privacy
+
+- Your job tracker, career profile, and resumes are stored in YOUR Drive
+- Keep your tracker sheet set to **Private** (not "anyone with the link")
+- The Google Drive connector lets Claude read/write files — review what access you're granting
+- You can disconnect Google Drive anytime in Claude's settings
+- You can always use the manual workflow (copy-paste) instead of Drive
+
 ## AI Privacy Tips
 
 Your AI assistant usually does **not** need:
@@ -29,12 +47,6 @@ Your AI assistant usually does **not** need:
 - Passwords or API keys
 
 Include contact details only when producing the final resume, not during analysis.
-
-## Google Drive / Sheets Privacy
-
-- Keep your tracker sheet set to **Private** (not shared)
-- If using Claude's Google Drive connector, review what access you're granting
-- You can always copy/paste instead of connecting Drive directly
 
 ## Job Scam Safety
 

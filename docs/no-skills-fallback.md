@@ -1,8 +1,18 @@
-# Using the System Without Claude Skills
+# Using the System Without Claude Skills or Chrome
 
-If you don't have access to Claude Skills (or prefer not to install them), you can use the same workflow by pasting prompts directly into Claude conversations.
+If you don't have Claude in Chrome or can't install Skills, the same workflow works with copy-paste prompts.
 
-## How to Use Each Agent Manually
+## Manual Workflow Summary
+
+| Step | With Chrome Extension | Manual Alternative |
+|---|---|---|
+| Read a job page | Claude reads it from your tab | You copy-paste the job description |
+| Save to tracker | Claude writes to Google Sheet | You copy the output into your sheet |
+| Access career profile | Claude reads from Drive | You attach the file each conversation |
+| Save fit reports | Claude saves to Drive | You save the output yourself |
+| Save resumes | Claude saves to Drive | You save the output yourself |
+
+## Copy-Paste Prompts
 
 ### Job Capture — Paste This Before Any Job Description
 
@@ -107,7 +117,7 @@ Resume template:
 
 ## Tips for Manual Use
 
-- Keep your career profile in a file you can quickly copy/paste or drag into Claude.
+- Keep your career profile file handy for quick drag-and-drop into Claude.
 - Start a fresh conversation for each job application to avoid context confusion.
-- Save Claude's outputs (fit reports, resume drafts) in your private folder.
-- Always do the fit analysis BEFORE the resume — don't waste time tailoring for poor-fit roles.
+- Save outputs in a private folder on your computer or Google Drive.
+- Always do fit analysis BEFORE resume tailoring — don't waste time on poor-fit roles.

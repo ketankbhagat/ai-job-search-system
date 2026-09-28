@@ -1,6 +1,6 @@
 ---
 name: job-fit
-description: "Compare a job description with the user's career profile and produce a fit report with a go/skip recommendation. Use when the user asks to analyze fit, score a job, check if they should apply, or evaluate a role."
+description: "Compare a job description with the user's career profile and produce a fit report with a go/skip recommendation. Works with Claude in Chrome (reads job from the current page) or pasted job descriptions. Pulls career profile from Google Drive automatically. Use when the user asks to analyze fit, score a job, check if they should apply, or evaluate a role."
 ---
 
 # Job Fit Analyzer
@@ -9,10 +9,21 @@ description: "Compare a job description with the user's career profile and produ
 
 Help the user decide whether a role is worth applying to — using evidence, not guesswork.
 
+## How Input Works
+
+**With Claude in Chrome (preferred):**
+Read the job description from the page the user is currently viewing.
+
+**Manual fallback:**
+The user pastes or attaches the job description.
+
+**Career profile:**
+If Google Drive is connected, pull `career-profile.private.md` from the user's Drive automatically. Otherwise, ask the user to attach it.
+
 ## Inputs
 
-1. The job description (pasted, attached, or open in browser)
-2. The user's `career-profile.private.md`
+1. The job description (from Chrome tab, pasted, or attached)
+2. The user's `career-profile.private.md` (from Drive or attached)
 3. Optional: the user's Google Sheet tracker row for this job
 
 ## Source of Truth
@@ -47,6 +58,8 @@ Return:
 5. Truthful keywords the user can use on their resume
 6. One-sentence resume strategy
 7. Items needing verification
+
+**If Google Drive is connected:** Update the Fit Score column in the user's Google Sheet tracker for this job.
 
 ## Rules
 

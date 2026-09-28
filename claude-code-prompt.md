@@ -1,6 +1,6 @@
 # Claude Code Prompt: Build the AI Job Search System
 
-Copy this entire prompt into Claude Code (terminal) to scaffold the complete project. It creates the repo structure, all skills, templates, docs, and the README.
+Copy this entire prompt into Claude Code (terminal) to scaffold the complete project.
 
 ---
 
@@ -9,113 +9,104 @@ Copy this entire prompt into Claude Code (terminal) to scaffold the complete pro
 ```
 Create a GitHub-ready project called "ai-job-search-system" with this structure
 and content. This is an open-source, AI-assisted job search workflow for new
-graduates. It uses Claude Skills as "agents" with a human-in-the-loop at every step.
+graduates. It uses Claude Skills as "agents" with Claude in Chrome for reading
+job pages and Google Drive for storage. Human stays in the loop at every step.
 
 ## Architecture
 
-4 AI agents (Claude Skills) + 1 human agent:
+4 AI agents (Claude Skills) + Claude in Chrome + Google Drive + 1 human:
 
-1. Job Capture Agent — structures job postings into Google Sheet tracker rows
+1. Job Capture Agent — reads the job page via Claude in Chrome, structures it,
+   saves a row to the user's Google Sheet tracker via Google Drive connector
 2. Profile Agent — builds a career profile from LinkedIn PDF + resume + CAR examples,
-   suggests target job titles
-3. Job Fit Agent — compares job descriptions to the career profile, recommends
-   Prioritize/Apply/Stretch/Skip
-4. Resume Tailor Agent — tailors resume using only facts from the career profile
+   suggests target job titles, saves profile to Google Drive
+3. Job Fit Agent — reads job from Chrome tab + pulls profile from Drive,
+   compares them, recommends Prioritize/Apply/Stretch/Skip, updates tracker
+4. Resume Tailor Agent — reads job from Chrome + profile from Drive,
+   tailors resume using only real facts, saves to Drive, updates tracker
 5. Human — reviews every output, verifies claims, applies manually
+
+The Chrome extension flow:
+- User browses LinkedIn logged into their own account
+- Clicks Claude in Chrome icon on a job page
+- Claude reads the job description from the page (no scraping, no automation)
+- Passes it to the appropriate skill
+- Saves output to Google Drive / Google Sheet
+
+Manual fallback for users without Chrome extension:
+- Copy-paste job descriptions into Claude conversations
+- Attach files manually instead of reading from Drive
+- Copy outputs into their own spreadsheet
 
 ## Directory structure
 
 ai-job-search-system/
-├── README.md                    # Main guide with Quick Start
-├── SETUP.md                     # Detailed step-by-step setup
+├── README.md                    # Main guide with Chrome extension workflow
+├── SETUP.md                     # Step-by-step: extension, Drive, Sheet, Skills
 ├── LICENSE                      # MIT
 ├── .gitignore                   # Block private files
 ├── docs/
-│   ├── how-it-works.md          # Architecture diagram and agent details
+│   ├── how-it-works.md          # Architecture with Chrome + Drive diagrams
 │   ├── no-skills-fallback.md    # Manual prompts for users without Skills
 │   └── privacy-guide.md         # What to keep private
 ├── templates/
-│   ├── career-profile.template.md   # Blank career profile structure
-│   ├── fit-report.template.md       # Fit report output format
-│   └── resume-template.md           # Blank resume structure
+│   ├── career-profile.template.md
+│   ├── fit-report.template.md
+│   └── resume-template.md
 └── skills/
-    ├── job-capture/
-    │   └── SKILL.md             # Job capture agent instructions
+    ├── job-capture/SKILL.md
     ├── profile-agent/
-    │   ├── SKILL.md             # Profile builder + title suggestions
-    │   └── references/
-    │       └── career-profile.template.md
+    │   ├── SKILL.md
+    │   └── references/career-profile.template.md
     ├── job-fit/
-    │   ├── SKILL.md             # Fit analysis agent
-    │   └── references/
-    │       └── fit-report.template.md
+    │   ├── SKILL.md
+    │   └── references/fit-report.template.md
     └── resume-tailor/
-        ├── SKILL.md             # Resume tailoring agent
-        └── references/
-            └── resume-template.md
+        ├── SKILL.md
+        └── references/resume-template.md
 
 ## Key principles for ALL content:
 
-1. AI is copilot, human is pilot — every agent output needs human approval
-2. Never invent experience — gaps are labeled "Gap" not filled with fiction
-3. No LinkedIn scraping or automation — manual capture only
-4. Privacy first — no personal data in the public repo
-5. Evidence-based — every skill must cite where it was used
+1. Claude in Chrome reads job pages — no scraping or automation
+2. Google Drive stores everything — tracker, profile, resumes, fit reports
+3. AI is copilot, human is pilot — every agent output needs human approval
+4. Never invent experience — gaps are labeled "Gap" not filled with fiction
+5. Privacy first — no personal data in the public repo
 6. Simple enough for non-technical users — no coding, no API keys, no terminal
+7. Manual fallback always available for users without Chrome/Drive
 
 ## README.md requirements:
 
-- Start with the one-rule principle
-- Show the 5-agent flow as ASCII art
-- "What You Need" table (Claude + Google account + browser, all free)
-- Quick Start in 5 numbered steps (fork, create sheet, install skills,
-  build profile, start applying)
-- Each agent explained: what it does, what you control, what it outputs
-- Important Rules section (never invent, never keyword-stuff, never automate,
-  verify jobs are real)
-- Repository structure tree
-- Credits line for Ketan Bhagat with LinkedIn link
-- MIT license note
+- ASCII diagram showing Chrome extension → agents → Google Drive flow
+- "What You Need" table (Claude + Chrome extension + Google account, all free)
+- Quick Start in 5 steps: install extension, connect Drive, create Sheet,
+  install Skills, build profile
+- Daily workflow section showing the Chrome extension flow on LinkedIn
+- "Two Ways to Use" comparison table (Chrome+Drive vs manual)
+- Each agent explained with how it works with Chrome and Drive
+- Important rules including "don't scrape LinkedIn" clarification
+- Credits line for Ketan Bhagat
+
+## SETUP.md requirements:
+
+- Part 1: Install Claude in Chrome (with test step)
+- Part 2: Connect Google Drive (with test step)
+- Part 3: Create Google Sheet tracker (with test step)
+- Part 4: Install 4 Claude Skills
+- Part 5: Build career profile (one-time, 30 min)
+- Part 6: Daily workflow with Chrome extension
+- Troubleshooting section
 
 ## SKILL.md format for each agent:
 
-Each skill needs YAML frontmatter with name and description (the description
-is what Claude uses to trigger the skill). Then markdown with:
+Each skill needs YAML frontmatter with name and description that mentions
+Chrome extension and Drive where applicable. Then markdown with:
 - Purpose (one line)
+- How Input Works (Chrome extension primary, manual fallback)
 - Rules (what it must/must not do)
-- Inputs (what it needs from the user)
 - Process (steps it follows)
-- Output (exact format it returns)
+- Output (exact format + where it saves in Drive)
 
-## Templates:
-
-- career-profile.template.md: sections for Target Roles, Education, Skills
-  (with evidence source for each), Experience (CAR format), Projects,
-  Research, Leadership, Certifications, Evidence Stories, Positioning Rules,
-  Truth Rules
-- fit-report.template.md: Job info, Recommendation, Evidence Matrix table,
-  Top Evidence, Gaps table, Supported Keywords, Resume Strategy,
-  Verification Checklist
-- resume-template.md: Name/contact, Summary, Education, Skills, Experience,
-  Projects, Additional — with "Template Rules for AI" section
-
-## .gitignore:
-
-Block: *.private.md, career-profile.*, job-tracker.*, *.env, node_modules,
-.DS_Store, resumes/, applications/, fit-reports/
-
-Create all files with complete content. Make the README engaging and
-scannable — a new grad should be able to start in 15 minutes. Use clear
-ASCII diagrams instead of complex graphics. Keep language direct and
-jargon-free.
+Create all files with complete content. Make it scannable — a new grad should
+be able to set up in 20 minutes. Keep language direct and jargon-free.
 ```
-
----
-
-## After Running the Prompt
-
-1. Review the generated files
-2. Test each skill by installing it in Claude
-3. Create a test career profile using the template
-4. Try the workflow with a real job posting
-5. Push to GitHub when satisfied
